@@ -4,15 +4,9 @@ import { Request, Response } from 'express'
 
 export const createParticipant = async (req: Request, res: Response) => {
   try {
-    const { displayName, email, password, confirmPassword } = req.body
-    const participant = new ParticipantModel({
-      displayName,
-      email,
-      password,
-      confirmPassword,
-    })
+    const participant = new ParticipantModel(req.body)
     await participant.save()
-    res.status(201).send(participant)
+    res.status(201).send(participant.toClient)
   } catch (err) {
     console.error(err)
     res.status(400).send(err)

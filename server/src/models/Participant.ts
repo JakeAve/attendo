@@ -2,7 +2,14 @@ import { Schema, model } from 'mongoose'
 import * as bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
 
-export const ParticipantSchema = new Schema(
+interface Participant {
+  displayName: string
+  email: string
+  password: string
+  toClient: string
+}
+
+export const ParticipantSchema = new Schema<Participant>(
   {
     displayName: {
       type: String,
@@ -34,8 +41,11 @@ export const ParticipantSchema = new Schema(
 )
 
 interface IParticipant extends mongoose.Document {
+  displayName: string
+  email: string
   password: string
-  _confirmPassword: string
+  _confirmPassword: string // placeholder
+  confirmPassword: string // virtual field
 }
 
 const getPassword = (participant: IParticipant) =>
@@ -49,7 +59,11 @@ ParticipantSchema.virtual('confirmPassword')
     this._confirmPassword = value
   })
 
-ParticipantSchema.pre('validate', function (next) {
+ParticipantSchema.virtual('toClient').get(function (this: IParticipant) {
+  return { displayName: this.displayName, email: this.email }
+})
+
+ParticipantSchema.pre('validate', function (this: IParticipant, next) {
   if (this.isNew && getPassword(this) !== this.confirmPassword)
     this.invalidate('confirmPassword', 'Passwords do not match')
 
