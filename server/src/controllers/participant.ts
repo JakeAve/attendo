@@ -1,6 +1,7 @@
 import { ParticipantModel } from '../models/Participant'
 
 import { Request, Response } from 'express'
+import { handleError } from './errors'
 
 export const createParticipant = async (req: Request, res: Response) => {
   try {
@@ -8,7 +9,6 @@ export const createParticipant = async (req: Request, res: Response) => {
     await participant.save()
     res.status(201).send(participant.toClient)
   } catch (err) {
-    console.error(err)
-    res.status(400).send(err)
+    handleError(req, res, err)
   }
 }

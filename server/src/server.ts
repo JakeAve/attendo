@@ -5,7 +5,7 @@ import express from 'express'
 const app = express()
 app.use(express.json())
 
-import { connectDb } from '../db/connect'
+import { connectDb } from './db/connect'
 connectDb()
 
 const PORT = process.env.PORT

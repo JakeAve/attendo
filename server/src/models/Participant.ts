@@ -6,7 +6,10 @@ interface Participant {
   displayName: string
   email: string
   password: string
-  toClient: string
+  toClient: {
+    displayName: string
+    email: string
+  }
 }
 
 export const ParticipantSchema = new Schema<Participant>(
