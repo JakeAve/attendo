@@ -1,0 +1,11 @@
+### Create new participant
+
+POST http://localhost:6000/api/participant
+Content-Type: application/json
+
+{
+    "displayName": "John Doe 3",
+    "email": "jacobjavery@gmail.oi",
+    "password": "12345678",
+    "confirmPassword": "12345678"
+}
