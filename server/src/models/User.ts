@@ -1,8 +1,9 @@
 import { Schema, model } from 'mongoose'
 import * as bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
+import { Collections } from './.collections'
 
-interface Participant {
+interface User {
   displayName: string
   email: string
   password: string
@@ -12,7 +13,7 @@ interface Participant {
   }
 }
 
-export const ParticipantSchema = new Schema<Participant>(
+export const UserSchema = new Schema<User>(
   {
     displayName: {
       type: String,
@@ -43,7 +44,7 @@ export const ParticipantSchema = new Schema<Participant>(
   },
 )
 
-interface IParticipant extends mongoose.Document {
+export interface IUser extends mongoose.Document {
   displayName: string
   email: string
   password: string
@@ -51,29 +52,29 @@ interface IParticipant extends mongoose.Document {
   confirmPassword: string // virtual field
 }
 
-const getPassword = (participant: IParticipant) =>
+export const getPassword = (participant: IUser) =>
   participant.get('password', null, { getters: false })
 
-ParticipantSchema.virtual('confirmPassword')
-  .get(function (this: IParticipant) {
+UserSchema.virtual('confirmPassword')
+  .get(function (this: IUser) {
     return this._confirmPassword
   })
-  .set(function (this: IParticipant, value: string) {
+  .set(function (this: IUser, value: string) {
     this._confirmPassword = value
   })
 
-ParticipantSchema.virtual('toClient').get(function (this: IParticipant) {
+UserSchema.virtual('toClient').get(function (this: IUser) {
   return { displayName: this.displayName, email: this.email }
 })
 
-ParticipantSchema.pre('validate', function (this: IParticipant, next) {
+UserSchema.pre('validate', function (this: IUser, next) {
   if (this.isNew && getPassword(this) !== this.confirmPassword)
     this.invalidate('confirmPassword', 'Passwords do not match')
 
   next()
 })
 
-ParticipantSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function (next) {
   if (this.isNew) {
     const pwdHash = await bcrypt.hash(getPassword(this), 10)
     this.password = pwdHash
@@ -83,4 +84,4 @@ ParticipantSchema.pre('save', async function (next) {
   next()
 })
 
-export const ParticipantModel = model('Participant', ParticipantSchema)
+export const UserModel = model(Collections.User, UserSchema)
