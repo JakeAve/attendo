@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 import { genEntryCode } from '../utils/genEntryCode'
 import { Collections } from './.collections'
 
@@ -8,7 +8,7 @@ interface Session {
   code: string
   start: Date
   end: Date
-  attendance: [object, boolean][]
+  attendance: [Types.ObjectId, boolean][]
 }
 
 export const SessionSchema = new Schema<Session>({
@@ -35,7 +35,7 @@ export const SessionSchema = new Schema<Session>({
   },
   end: {
     type: Date,
-    required: true,
+    // required: true,
     validate: {
       validator: (date: Date) => {
         return date > (this as unknown as Session).start

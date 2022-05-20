@@ -1,32 +1,38 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Document, Types } from 'mongoose'
 import { Collections } from './.collections'
 
-interface Course {
+interface ICourse extends Document {
   name: string
-  attendees: object[]
-  admins: object[]
-  sessions: object[]
+  attendees: Types.ObjectId[]
+  admins: Types.ObjectId[]
+  sessions: Types.ObjectId[]
 }
 
-export const CourseSchema = new Schema<Course>({
+export const CourseSchema = new Schema<ICourse>({
   name: {
     type: String,
     required: [true, 'Course name is required'],
     minLength: [3, 'Course name must be at least 3 characters long'],
   },
-  attendees: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: Collections.Attendee,
-    },
-  ],
+  attendees: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: Collections.Attendee,
+      },
+    ],
+    default: [],
+  },
   admins: [{ type: Schema.Types.ObjectId, ref: Collections.User }],
-  sessions: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: Collections.Session,
-    },
-  ],
+  sessions: {
+    type: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: Collections.Session,
+      },
+    ],
+    default: [],
+  },
 })
 
 export const CourseModel = model(Collections.Course, CourseSchema)
