@@ -1,22 +1,16 @@
-import { Schema, model, Types } from 'mongoose'
+import { Schema, model, Types, Document } from 'mongoose'
 import { genEntryCode } from '../utils/genEntryCode'
 import { Collections } from './.collections'
 
-interface Session {
-  date: Date
+interface ISession extends Document {
   name: string
   code: string
   start: Date
-  end: Date
-  attendance: [Types.ObjectId, boolean][]
+  end?: Date
+  course: Types.ObjectId
 }
 
-export const SessionSchema = new Schema<Session>({
-  date: {
-    type: Date,
-    required: true,
-    default: Date.now,
-  },
+export const SessionSchema = new Schema<ISession>({
   name: {
     type: String,
     required: true,
@@ -31,27 +25,20 @@ export const SessionSchema = new Schema<Session>({
   start: {
     type: Date,
     required: true,
-    default: (this as unknown as Session).date,
+    default: Date.now,
   },
   end: {
     type: Date,
-    // required: true,
     validate: {
       validator: (date: Date) => {
-        return date > (this as unknown as Session).start
+        return date > (this as unknown as ISession).start
       },
       message: 'End time must be after start time',
     },
   },
-  attendance: {
-    type: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: Collections.Attendee,
-      },
-      Boolean,
-    ],
-    default: [],
+  course: {
+    type: Schema.Types.ObjectId,
+    ref: Collections.Course,
   },
 })
 

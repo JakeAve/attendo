@@ -2,10 +2,16 @@ import { Router } from 'express'
 
 const router = Router()
 
-import courseRoutes from './course'
-router.use('/course', courseRoutes)
+import attendeeRoutes from './attendee'
+router.use('/attendee', attendeeRoutes)
 
-import participantRoutes from './participant'
-router.use('/participant', participantRoutes)
+import authRoutes from './auth'
+router.use('/auth', authRoutes)
+
+import courseRoutes from './course'
+router.use('/courses', courseRoutes)
+
+import sessionRoutes from './session'
+router.use('/sessions', sessionRoutes)
 
 export default router

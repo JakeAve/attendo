@@ -3,7 +3,9 @@ dotenv.config()
 
 import express from 'express'
 const app = express()
+import { setUser } from './middleware/setUser'
 app.use(express.json())
+app.use('*', setUser)
 
 import { connectDb } from './db/connect'
 connectDb()

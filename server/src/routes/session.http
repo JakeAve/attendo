@@ -1,0 +1,6 @@
+POST http://localhost:6000/api/sessions/628c29af3d1f27ba7e44a06f
+Content-Type: application/json
+
+{
+    
+}

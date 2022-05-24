@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
 import { Collections } from './.collections'
 
+// don't export this User, use IUser
 interface User {
   displayName: string
   email: string

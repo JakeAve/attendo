@@ -1,0 +1,20 @@
+### Get courses of user
+GET http://localhost:6000/api/courses
+
+
+### Get courses by id
+
+GET http://localhost:6000/api/courses/:id
+
+
+### Create new course
+
+POST http://localhost:6000/api/courses
+Content-Type: application/json
+
+{
+    "name": "course1",
+    "attendees": ["jake", "joe", "jim"],
+    "admins": []
+    
+}
