@@ -6,9 +6,12 @@ import { handleError } from './error'
 
 export const attendByAttendeeId = async (req: IRequest, res: Response) => {
   try {
-    const { sessionId, attendeeId } = req.params
-    const session = await SessionModel.findById(sessionId)
+    const { attendeeId } = req.params
+    const { session: sessionId, code } = req.body
+    const session = await SessionModel.findById(sessionId as String)
     if (!session) throw new Error('Session not found')
+
+    if (code !== session.code) throw new Error('Invalid session code')
 
     if (session.end && session.end < new Date())
       throw new Error('Session has ended')
