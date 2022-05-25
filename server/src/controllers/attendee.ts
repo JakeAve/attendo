@@ -1,6 +1,7 @@
 import { Response } from 'express'
 import { IRequest } from '../middleware/setUser'
 import { AttendeeModel } from '../models/Attendee'
+import { CourseModel } from '../models/Course'
 import { SessionModel } from '../models/Session'
 import { handleError } from './error'
 
@@ -30,6 +31,45 @@ export const attendByAttendeeId = async (req: IRequest, res: Response) => {
       attendee.attendance.push(session._id)
       await attendee.save()
     }
+
+    res.status(201).send(attendee.toJSON())
+  } catch (err) {
+    handleError(req, res, err)
+  }
+}
+
+export const attendAsNewAttendee = async (req: IRequest, res: Response) => {
+  try {
+    const { session: sessionId, code, name } = req.body
+    const session = await SessionModel.findById(sessionId as String)
+    if (!session) throw new Error('Session not found')
+
+    if (code !== session.code) throw new Error('Invalid session code')
+
+    if (session.end && session.end < new Date())
+      throw new Error('Session has ended')
+
+    if (session.start && session.start > new Date())
+      throw new Error('Session has not started')
+
+    const course = await CourseModel.findById(session.course).populate(
+      'attendees',
+    )
+    if (!course) throw new Error('Course not found')
+
+    // @ts-ignore
+    if (course.attendees.find((attendee) => attendee.name === name))
+      throw new Error('Attendee already exists')
+
+    const attendee = new AttendeeModel({
+      name,
+      course: session.course,
+      attendance: [session._id],
+    })
+    await attendee.save()
+
+    course.attendees.push(attendee._id)
+    await course.save()
 
     res.status(201).send(attendee.toJSON())
   } catch (err) {
