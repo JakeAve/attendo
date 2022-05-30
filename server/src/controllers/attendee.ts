@@ -76,3 +76,16 @@ export const attendAsNewAttendee = async (req: IRequest, res: Response) => {
     handleError(req, res, err)
   }
 }
+
+export const getAttendance = async (req: IRequest, res: Response) => {
+  try {
+    const { attendeeId } = req.params
+    const attendee = await AttendeeModel.findById(attendeeId).populate(
+      'attendance',
+    )
+    if (!attendee) throw new Error('Attendee not found')
+    res.json(attendee.attendance)
+  } catch (err) {
+    handleError(req, res, err)
+  }
+}

@@ -4,3 +4,9 @@ Content-Type: application/json
 {
     
 }
+
+###
+
+GET http://localhost:6000/api/sessions/attendance/628c2a98752d6c1d904e32df
+
+###
