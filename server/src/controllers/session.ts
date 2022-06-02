@@ -29,7 +29,6 @@ export const getAttendance = async (req: IRequest, res: Response) => {
     const { sessionId } = req.params
     const session = await SessionModel.findById(sessionId).populate('course')
     if (!session) throw new Error('Session not found')
-    console.log({ session })
     const attendees = await AttendeeModel.find({
       // @ts-ignore
       _id: { $in: session.course.attendees },

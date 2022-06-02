@@ -18,3 +18,9 @@ Content-Type: application/json
     "admins": []
     
 }
+
+###
+
+GET http://localhost:6000/api/courses/attendance/628c29af3d1f27ba7e44a06f
+
+###

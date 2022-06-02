@@ -25,3 +25,30 @@ export const createCourse = async (req: IRequest, res: Response) => {
     handleError(req, res, err)
   }
 }
+
+interface ICourseAttendance {
+  [key: string]: string[]
+}
+
+export const getAttendance = async (req: IRequest, res: Response) => {
+  try {
+    const { courseId } = req.params
+    const course = await CourseModel.findById(courseId).populate('attendees')
+    if (!course) throw new Error('Course not found')
+    const sessions: ICourseAttendance = {}
+    for (const attendee of course.attendees) {
+      // @ts-ignore
+      for (const session of attendee.attendance) {
+        if (sessions[session._id]) {
+          // @ts-ignore
+          sessions[session._id].push(attendee.name)
+          // @ts-ignore
+        } else sessions[session._id] = [attendee.name]
+      }
+    }
+    console.log({ sessions })
+    res.json({ attendance: sessions })
+  } catch (err) {
+    handleError(req, res, err)
+  }
+}
