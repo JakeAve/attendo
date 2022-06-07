@@ -26,8 +26,12 @@ export const createCourse = async (req: IRequest, res: Response) => {
   }
 }
 
-interface ICourseAttendance {
+interface ISessions {
   [key: string]: string[]
+}
+
+interface ICourseAttendance {
+  [key: string]: [string, boolean][]
 }
 
 export const getAttendance = async (req: IRequest, res: Response) => {
@@ -35,7 +39,7 @@ export const getAttendance = async (req: IRequest, res: Response) => {
     const { courseId } = req.params
     const course = await CourseModel.findById(courseId).populate('attendees')
     if (!course) throw new Error('Course not found')
-    const sessions: ICourseAttendance = {}
+    const sessions: ISessions = {}
     for (const attendee of course.attendees) {
       // @ts-ignore
       for (const session of attendee.attendance) {
@@ -46,8 +50,19 @@ export const getAttendance = async (req: IRequest, res: Response) => {
         } else sessions[session._id] = [attendee.name]
       }
     }
+    const attendance: ICourseAttendance = {}
+    for (const [sessionId, names] of Object.entries(sessions)) {
+      attendance[sessionId] = names.map((name) => [name, true])
+      for (const attendee of course.attendees) {
+        // @ts-ignore
+        if (!names.includes(attendee.name)) {
+          // @ts-ignore
+          attendance[sessionId].push([attendee.name, false])
+        }
+      }
+    }
     console.log({ sessions })
-    res.json({ attendance: sessions })
+    res.json({ attendance })
   } catch (err) {
     handleError(req, res, err)
   }
