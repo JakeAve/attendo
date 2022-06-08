@@ -61,7 +61,6 @@ export const getAttendance = async (req: IRequest, res: Response) => {
         }
       }
     }
-    console.log({ sessions })
     res.json({ attendance })
   } catch (err) {
     handleError(req, res, err)

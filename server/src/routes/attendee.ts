@@ -9,6 +9,6 @@ const router = Router()
 
 router.get('/attendance/:attendeeId', getAttendance)
 router.post('/attend/:attendeeId', attendByAttendeeId)
-router.post('/attend-new/:attendeeId', attendAsNewAttendee)
+router.post('/attend-new', attendAsNewAttendee)
 
 export default router
