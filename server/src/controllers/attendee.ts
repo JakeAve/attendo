@@ -10,7 +10,12 @@ export const attendByAttendeeId = async (req: IRequest, res: Response) => {
     const { attendeeId } = req.params
     const { session: sessionId, code } = req.body
     const session = await SessionModel.findById(sessionId as String)
-    if (!session) throw new Error('Session not found')
+    if (!session)
+      throw new ResourceNotFoundError(
+        'Session not found',
+        sessionId,
+        ResourceTypes.SESSION,
+      )
 
     if (code !== session.code) throw new Error('Invalid session code')
 
@@ -100,6 +105,25 @@ export const getAttendance = async (req: IRequest, res: Response) => {
         ResourceTypes.ATTENDEE,
       )
     res.json(attendee.attendance)
+  } catch (err) {
+    handleError(req, res, err)
+  }
+}
+
+export const updateAttendeeName = async (req: IRequest, res: Response) => {
+  try {
+    const { attendeeId } = req.params
+    const { name } = req.body
+    const attendee = await AttendeeModel.findById(attendeeId)
+    if (!attendee)
+      throw new ResourceNotFoundError(
+        'Attendee not found',
+        attendeeId,
+        ResourceTypes.ATTENDEE,
+      )
+    attendee.name = name
+    await attendee.save()
+    res.json(attendee.toJSON())
   } catch (err) {
     handleError(req, res, err)
   }
