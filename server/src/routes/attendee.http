@@ -1,17 +1,14 @@
-POST http://localhost:6000/api/attendee/:sessionId/:attendeeId
-
-###
 
 GET http://localhost:6000/api/attendee/attendance/628c29af3d1f27ba7e44a070
 
 ###
 
-POST http://localhost:6000/api/attendee/attend/628c29af3d1f27ba7e44a070
+POST http://localhost:6000/api/attendee/attend/62ae65d92fa197321e588d4a
 Content-Type: application/json
 
 {
     "code": "zkmaf9",
-    "session": "628c2a98752d6c1d904e32df"
+    "session": "62ae65d92fa197321e588d4a"
 }
 
 ###

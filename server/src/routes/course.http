@@ -1,10 +1,8 @@
-### Get courses of user
-GET http://localhost:6000/api/courses
-
+@courseId = 123456789
 
 ### Get courses by id
 
-GET http://localhost:6000/api/courses/:id
+GET http://localhost:6000/api/courses/attendance/{{courseId}}
 
 
 ### Create new course
@@ -14,7 +12,7 @@ Content-Type: application/json
 
 {
     "name": "course1",
-    "attendees": ["jake", "joe", "jim"],
+    "attendees": ["First Sister", "Second Sister", "Third Sister"],
     "admins": []
     
 }

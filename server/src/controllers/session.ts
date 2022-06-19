@@ -3,14 +3,19 @@ import { IRequest } from '../middleware/setUser'
 import { AttendeeModel } from '../models/Attendee'
 import { CourseModel } from '../models/Course'
 import { SessionModel } from '../models/Session'
-import { handleError } from './error'
+import { handleError, ResourceNotFoundError, ResourceTypes } from './error'
 
 export const createSession = async (req: IRequest, res: Response) => {
   try {
     const { name, start } = req.body
     const { courseId } = req.params
     const course = await CourseModel.findById(courseId)
-    if (!course) throw new Error('Course not found')
+    if (!course)
+      throw new ResourceNotFoundError(
+        'Course not found',
+        courseId,
+        ResourceTypes.COURSE,
+      )
 
     const session = new SessionModel({ name, start, course })
     await session.save()
@@ -28,7 +33,12 @@ export const getAttendance = async (req: IRequest, res: Response) => {
   try {
     const { sessionId } = req.params
     const session = await SessionModel.findById(sessionId).populate('course')
-    if (!session) throw new Error('Session not found')
+    if (!session)
+      throw new ResourceNotFoundError(
+        'Session not found',
+        sessionId,
+        ResourceTypes.SESSION,
+      )
     const attendees = await AttendeeModel.find({
       // @ts-ignore
       _id: { $in: session.course.attendees },

@@ -1,4 +1,4 @@
-POST http://localhost:6000/api/sessions/628c29af3d1f27ba7e44a06f
+POST http://localhost:6000/api/sessions/62ae65022fa197321e588d43
 Content-Type: application/json
 
 {
@@ -7,6 +7,6 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:6000/api/sessions/attendance/628c2a98752d6c1d904e32df
+GET http://localhost:6000/api/sessions/attendance/62ae65022fa197321e588d43
 
 ###

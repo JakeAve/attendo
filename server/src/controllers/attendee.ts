@@ -3,7 +3,7 @@ import { IRequest } from '../middleware/setUser'
 import { AttendeeModel } from '../models/Attendee'
 import { CourseModel } from '../models/Course'
 import { SessionModel } from '../models/Session'
-import { handleError } from './error'
+import { handleError, ResourceNotFoundError, ResourceTypes } from './error'
 
 export const attendByAttendeeId = async (req: IRequest, res: Response) => {
   try {
@@ -42,7 +42,12 @@ export const attendAsNewAttendee = async (req: IRequest, res: Response) => {
   try {
     const { session: sessionId, code, name } = req.body
     const session = await SessionModel.findById(sessionId as String)
-    if (!session) throw new Error('Session not found')
+    if (!session)
+      throw new ResourceNotFoundError(
+        'Session not found',
+        sessionId,
+        ResourceTypes.SESSION,
+      )
 
     if (code !== session.code) throw new Error('Invalid session code')
 
@@ -55,7 +60,12 @@ export const attendAsNewAttendee = async (req: IRequest, res: Response) => {
     const course = await CourseModel.findById(session.course).populate(
       'attendees',
     )
-    if (!course) throw new Error('Course not found')
+    if (!course)
+      throw new ResourceNotFoundError(
+        'Course not found',
+        session.course.toString(),
+        ResourceTypes.COURSE,
+      )
 
     // @ts-ignore
     if (course.attendees.find((attendee) => attendee.name === name))
@@ -83,7 +93,12 @@ export const getAttendance = async (req: IRequest, res: Response) => {
     const attendee = await AttendeeModel.findById(attendeeId).populate(
       'attendance',
     )
-    if (!attendee) throw new Error('Attendee not found')
+    if (!attendee)
+      throw new ResourceNotFoundError(
+        'Attendee not found',
+        attendeeId,
+        ResourceTypes.ATTENDEE,
+      )
     res.json(attendee.attendance)
   } catch (err) {
     handleError(req, res, err)

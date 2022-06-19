@@ -1,7 +1,7 @@
 import { Response } from 'express'
 import { IRequest } from '../middleware/setUser'
 import { UserModel, getPassword, IUser } from '../models/User'
-import { handleError, InvalidCredentials } from './error'
+import { handleError, InvalidCredentialsError } from './error'
 import * as bcrypt from 'bcrypt'
 
 export const login = async (req: IRequest, res: Response) => {
@@ -9,13 +9,14 @@ export const login = async (req: IRequest, res: Response) => {
     const { email, password } = req.body
 
     const participant = await UserModel.findOne({ email })
-    if (!participant) throw new InvalidCredentials('Invalid credentials')
+    if (!participant) throw new InvalidCredentialsError('Invalid credentials')
 
     const correctPassword = await bcrypt.compare(
       password,
       getPassword(participant as unknown as IUser),
     )
-    if (!correctPassword) throw new InvalidCredentials('Invalid credentials')
+    if (!correctPassword)
+      throw new InvalidCredentialsError('Invalid credentials')
 
     res.status(200).send(participant.toClient)
   } catch (err) {

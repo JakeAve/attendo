@@ -25,6 +25,7 @@ enum ErrorCode {
   MONGOOSE_CONNECTION_ERROR = 4,
   MONGOOSE_DUPLICATE_KEY = 5,
   INVALID_CREDENTIALS = 6,
+  RESOURCE_NOT_FOUND = 7,
 }
 
 enum ErrorTypes {
@@ -39,10 +40,27 @@ interface DupeKey {
   }
 }
 
-export class InvalidCredentials extends Error {
+export class InvalidCredentialsError extends Error {
   constructor(message: string) {
     super(message)
-    Object.setPrototypeOf(this, InvalidCredentials.prototype)
+    Object.setPrototypeOf(this, InvalidCredentialsError.prototype)
+  }
+}
+
+export enum ResourceTypes {
+  ATTENDEE = 'ATTENDEE',
+  COURSE = 'COURSE',
+  SESSION = 'SESSION',
+}
+
+export class ResourceNotFoundError extends Error {
+  resourceId: string
+  resourceType: string
+  constructor(message: string, resourceId: string, resourceType: string) {
+    super(message)
+    Object.setPrototypeOf(this, ResourceNotFoundError.prototype)
+    this.resourceId = resourceId
+    this.resourceType = resourceType
   }
 }
 
@@ -68,7 +86,7 @@ export const handleError = async (
     return res.status(400).send(report)
   }
 
-  if (error instanceof InvalidCredentials) {
+  if (error instanceof InvalidCredentialsError) {
     const report: IUserInputErrorReport = {
       type: ErrorTypes.USER_INPUT,
       code: ErrorCode.INVALID_CREDENTIALS,
@@ -98,7 +116,21 @@ export const handleError = async (
     return res.status(400).send(report)
   }
 
-  console.error(error)
+  if (error instanceof ResourceNotFoundError) {
+    const { resourceType, resourceId } = error
+    const report: IErrorReport = {
+      type: ErrorTypes.USER_INPUT,
+      code: ErrorCode.RESOURCE_NOT_FOUND,
+      message: error.message,
+      data: {
+        resourceType,
+        resourceId,
+      },
+    }
+    return res.status(404).send(report)
+  }
+
+  if (error) console.error(error)
   const report: IErrorReport = {
     type: ErrorTypes.INTERNAL_SERVER_ERROR,
     code: ErrorCode.INTERNAL_SEVER_ERROR,
