@@ -52,3 +52,27 @@ export const getAttendance = async (req: IRequest, res: Response) => {
     handleError(req, res, err)
   }
 }
+
+export const updateSession = async (req: IRequest, res: Response) => {
+  try {
+    const { sessionId } = req.params
+    const { name, code, start, end } = req.body
+    const session = await SessionModel.findById(sessionId)
+    if (!session)
+      throw new ResourceNotFoundError(
+        'Session not found',
+        sessionId,
+        ResourceTypes.SESSION,
+      )
+
+    if (name) session.name = name
+    if (code) session.code = code
+    if (start) session.start = new Date(start)
+    if (end) session.end = new Date(end)
+
+    await session.save()
+    res.status(200).send(session.toJSON())
+  } catch (err) {
+    handleError(req, res, err)
+  }
+}

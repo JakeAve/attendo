@@ -30,8 +30,8 @@ export const SessionSchema = new Schema<ISession>({
   end: {
     type: Date,
     validate: {
-      validator: (date: Date) => {
-        return date > (this as unknown as ISession).start
+      validator: function (date: Date) {
+        return date.getTime() > (this as unknown as ISession).start.getTime()
       },
       message: 'End time must be after start time',
     },

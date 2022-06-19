@@ -10,3 +10,13 @@ Content-Type: application/json
 GET http://localhost:6000/api/sessions/attendance/62ae65022fa197321e588d43
 
 ###
+
+PUT http://localhost:6000/api/sessions/62ae65d92fa197321e588d4a
+Content-Type: application/json
+
+{
+    "name": "Course 99",
+    "code": "C99",
+    "start": "2015-01-01T00:00:00.000Z",
+    "end": "2016-01-01T00:00:00.000Z"
+}
