@@ -3,7 +3,7 @@ import { IRequest } from '../middleware/setUser'
 import { AttendeeModel } from '../models/Attendee'
 import { CourseModel } from '../models/Course'
 import { UserModel } from '../models/User'
-import { handleError } from './error'
+import { handleError, ResourceNotFoundError, ResourceTypes } from './error'
 
 export const createCourse = async (req: IRequest, res: Response) => {
   try {
@@ -38,7 +38,12 @@ export const getAttendance = async (req: IRequest, res: Response) => {
   try {
     const { courseId } = req.params
     const course = await CourseModel.findById(courseId).populate('attendees')
-    if (!course) throw new Error('Course not found')
+    if (!course)
+      throw new ResourceNotFoundError(
+        'Course not found',
+        courseId,
+        ResourceTypes.COURSE,
+      )
     const sessions: ISessions = {}
     for (const attendee of course.attendees) {
       // @ts-ignore
