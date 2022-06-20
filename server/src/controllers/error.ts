@@ -26,6 +26,8 @@ enum ErrorCode {
   MONGOOSE_DUPLICATE_KEY = 5,
   INVALID_CREDENTIALS = 6,
   RESOURCE_NOT_FOUND = 7,
+  SESSION_HAS_ENDED = 8,
+  SESSION_HAS_NOT_STARTED = 9,
 }
 
 enum ErrorTypes {
@@ -61,6 +63,20 @@ export class ResourceNotFoundError extends Error {
     Object.setPrototypeOf(this, ResourceNotFoundError.prototype)
     this.resourceId = resourceId
     this.resourceType = resourceType
+  }
+}
+
+export class SessionHasNotStartedError extends Error {
+  constructor(message: string) {
+    super(message)
+    Object.setPrototypeOf(this, SessionHasNotStartedError.prototype)
+  }
+}
+
+export class SessionHasEndedError extends Error {
+  constructor(message: string) {
+    super(message)
+    Object.setPrototypeOf(this, SessionHasEndedError.prototype)
   }
 }
 
@@ -128,6 +144,26 @@ export const handleError = async (
       },
     }
     return res.status(404).send(report)
+  }
+
+  if (error instanceof SessionHasNotStartedError) {
+    const report: IErrorReport = {
+      type: ErrorTypes.USER_INPUT,
+      code: ErrorCode.SESSION_HAS_NOT_STARTED,
+      message: error.message,
+      data: {},
+    }
+    return res.status(400).send(report)
+  }
+
+  if (error instanceof SessionHasEndedError) {
+    const report: IErrorReport = {
+      type: ErrorTypes.USER_INPUT,
+      code: ErrorCode.SESSION_HAS_ENDED,
+      message: error.message,
+      data: {},
+    }
+    return res.status(400).send(report)
   }
 
   if (error) console.error(error)

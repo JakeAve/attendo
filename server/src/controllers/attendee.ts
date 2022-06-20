@@ -3,7 +3,13 @@ import { IRequest } from '../middleware/setUser'
 import { AttendeeModel } from '../models/Attendee'
 import { CourseModel } from '../models/Course'
 import { SessionModel } from '../models/Session'
-import { handleError, ResourceNotFoundError, ResourceTypes } from './error'
+import {
+  handleError,
+  ResourceNotFoundError,
+  ResourceTypes,
+  SessionHasEndedError,
+  SessionHasNotStartedError,
+} from './error'
 
 export const attendByAttendeeId = async (req: IRequest, res: Response) => {
   try {
@@ -20,13 +26,18 @@ export const attendByAttendeeId = async (req: IRequest, res: Response) => {
     if (code !== session.code) throw new Error('Invalid session code')
 
     if (session.end && session.end < new Date())
-      throw new Error('Session has ended')
+      throw new SessionHasEndedError('Session has ended')
 
     if (session.start && session.start > new Date())
-      throw new Error('Session has not started')
+      throw new SessionHasNotStartedError('Session has not started')
 
     const attendee = await AttendeeModel.findById(attendeeId)
-    if (!attendee) throw new Error('Attendee not found')
+    if (!attendee)
+      throw new ResourceNotFoundError(
+        'Attendee not found',
+        attendeeId,
+        ResourceTypes.ATTENDEE,
+      )
 
     if (!session.course.equals(attendee.course))
       throw new Error('Attendee not associated with course')

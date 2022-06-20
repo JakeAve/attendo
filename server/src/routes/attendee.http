@@ -1,4 +1,5 @@
 @attendeeId = 62ae65022fa197321e588d44
+@sessionId = 62ae65d92fa197321e588d4a
 
 GET http://localhost:6000/api/attendee/attendance/628c29af3d1f27ba7e44a070
 
@@ -8,8 +9,8 @@ POST http://localhost:6000/api/attendee/attend/{{attendeeId}}
 Content-Type: application/json
 
 {
-    "code": "zkmaf9",
-    "session": "62ae65d92fa197321e588d4a"
+    "code": "C99",
+    "session": "{{sessionId}}"
 }
 
 ###

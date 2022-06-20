@@ -1,3 +1,5 @@
+@sessionId = 62ae65d92fa197321e588d4a
+
 POST http://localhost:6000/api/sessions/62ae65022fa197321e588d43
 Content-Type: application/json
 
