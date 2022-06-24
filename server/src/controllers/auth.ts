@@ -3,6 +3,7 @@ import { IRequest } from '../middleware/setUser'
 import { UserModel, getPassword, IUser } from '../models/User'
 import { handleError, InvalidCredentialsError } from './error'
 import * as bcrypt from 'bcrypt'
+import { signJwt } from '../utils/jwt'
 
 export const login = async (req: IRequest, res: Response) => {
   try {
@@ -18,7 +19,9 @@ export const login = async (req: IRequest, res: Response) => {
     if (!correctPassword)
       throw new InvalidCredentialsError('Invalid credentials')
 
-    res.status(200).send(participant.toClient)
+    const authToken = await signJwt(participant.toClient)
+    const payload = { ...participant.toClient, authToken }
+    res.status(200).send(payload)
   } catch (err) {
     handleError(req, res, err)
   }
