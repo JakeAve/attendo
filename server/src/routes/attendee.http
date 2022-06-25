@@ -1,8 +1,9 @@
 @attendeeId = 62ae65022fa197321e588d44
 @sessionId = 62ae65d92fa197321e588d4a
+@jwt = eyJhbGciOiJFUzI1NiJ9.eyJkaXNwbGF5TmFtZSI6IkpvaG4gRG9lIDExIiwiZW1haWwiOiJzdXBlcmNvb2xAZ21haWwuY29tIiwiaWF0IjoxNjU2MDMzNzE2LCJpc3MiOiJhdHRlbmRvLWFwaSIsImF1ZCI6Imh0dHBzOi8vYXR0ZW5kby5jb20iLCJleHAiOjE2NTYwNDA5MTZ9.kYJBYhC7N5pSIvhWBlMPXW-kZ5ZbaseOaOr9GiQkBNp1Sch-ssLard3mudzX7aLP3gXaJzEfc0nHB0l-SWZPXw
 
 GET http://localhost:6000/api/attendee/attendance/628c29af3d1f27ba7e44a070
-
+Authorization: Bearer {{jwt}}
 ###
 
 POST http://localhost:6000/api/attendee/attend/{{attendeeId}}

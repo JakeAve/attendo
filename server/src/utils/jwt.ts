@@ -9,6 +9,7 @@ let publicKey: Uint8Array | jose.KeyLike
 ;(async () => {
   privateKey = await jose.importJWK(rawPrivateKey)
   publicKey = await jose.importJWK(rawPublicKey)
+  console.log(`JWT keys ready`)
 })()
 
 const issuer = 'attendo-api'
@@ -20,7 +21,7 @@ export const signJwt = (payload: jose.JWTPayload) =>
     .setIssuedAt()
     .setIssuer(issuer)
     .setAudience(audience)
-    .setExpirationTime('2h')
+    .setExpirationTime('30m')
     .sign(privateKey)
 
 export const verifyJwt = (jwt: string) =>

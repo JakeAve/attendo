@@ -3,9 +3,11 @@ dotenv.config()
 
 import express from 'express'
 const app = express()
-import { setUser } from './middleware/setUser'
+
+import cookieParser from 'cookie-parser'
+
 app.use(express.json())
-app.use('*', setUser)
+app.use(cookieParser())
 
 import { connectDb } from './db/connect'
 connectDb()

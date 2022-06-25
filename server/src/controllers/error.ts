@@ -1,6 +1,7 @@
 import { Response } from 'express'
 import { IRequest } from '../middleware/setUser'
 import { Error as MongooseErrorNamespace } from 'mongoose'
+import * as jose from 'jose'
 
 interface IErrorReport {
   type: ErrorTypes
@@ -28,6 +29,8 @@ enum ErrorCode {
   RESOURCE_NOT_FOUND = 7,
   SESSION_HAS_ENDED = 8,
   SESSION_HAS_NOT_STARTED = 9,
+  NO_JWT = 10,
+  ERR_JWS_SIGNATURE_VERIFICATION_FAILED = 11,
 }
 
 enum ErrorTypes {
@@ -80,6 +83,12 @@ export class SessionHasEndedError extends Error {
   }
 }
 
+export class NoJWTError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+}
+
 export const handleError = async (
   req: IRequest,
   res: Response,
@@ -89,6 +98,27 @@ export const handleError = async (
     catchingError: (error as Error).message,
     user: req.user,
   })
+
+  if (error instanceof NoJWTError) {
+    const report: IErrorReport = {
+      type: ErrorTypes.USER_INPUT,
+      code: ErrorCode.NO_JWT,
+      message: error.message,
+      data: {},
+    }
+    return res.status(401).send(report)
+  }
+
+  if (error instanceof jose.errors.JWSSignatureVerificationFailed) {
+    const report: IErrorReport = {
+      type: ErrorTypes.USER_INPUT,
+      code: ErrorCode.ERR_JWS_SIGNATURE_VERIFICATION_FAILED,
+      message: error.message,
+      data: {},
+    }
+    return res.status(401).send(report)
+  }
+
   if (error instanceof MongooseErrorNamespace.ValidationError) {
     const fields = Object.values(error.errors).map(
       (err) => [err.path, err.message] as [string, string],
