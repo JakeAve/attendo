@@ -3,7 +3,12 @@ import { IRequest } from '../middleware/setUser'
 import { AttendeeModel } from '../models/Attendee'
 import { CourseModel } from '../models/Course'
 import { SessionModel } from '../models/Session'
-import { handleError, ResourceNotFoundError, ResourceTypes } from './error'
+import {
+  handleError,
+  ResourceNotFoundError,
+  ResourceTypes,
+} from '../handlers/errorHandler'
+import { handleResponse } from '../handlers/responseHandler'
 
 export const createSession = async (req: IRequest, res: Response) => {
   try {
@@ -23,7 +28,7 @@ export const createSession = async (req: IRequest, res: Response) => {
     course.sessions.push(session._id)
     await course.save()
 
-    res.status(201).send(session.toJSON())
+    handleResponse(req, res, { data: session.toJSON(), status: 201 })
   } catch (err) {
     handleError(req, res, err)
   }
@@ -47,7 +52,7 @@ export const getAttendance = async (req: IRequest, res: Response) => {
       attendee.name,
       attendee.attendance.includes(session._id),
     ])
-    res.json(attendance)
+    handleResponse(req, res, { data: attendance })
   } catch (err) {
     handleError(req, res, err)
   }
@@ -71,7 +76,7 @@ export const updateSession = async (req: IRequest, res: Response) => {
     if (end) session.end = new Date(end)
 
     await session.save()
-    res.status(200).send(session.toJSON())
+    handleResponse(req, res, { data: session.toJSON() })
   } catch (err) {
     handleError(req, res, err)
   }

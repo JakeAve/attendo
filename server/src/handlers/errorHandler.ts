@@ -2,12 +2,14 @@ import { Response } from 'express'
 import { IRequest } from '../middleware/setUser'
 import { Error as MongooseErrorNamespace } from 'mongoose'
 import * as jose from 'jose'
+import { handleResponse } from './responseHandler'
 
 interface IErrorReport {
   type: ErrorTypes
   code: ErrorCode
   message: string
   data: UserInputErrorData | {}
+  status: number
 }
 
 interface UserInputErrorData {
@@ -31,6 +33,7 @@ enum ErrorCode {
   SESSION_HAS_NOT_STARTED = 9,
   NO_JWT = 10,
   ERR_JWS_SIGNATURE_VERIFICATION_FAILED = 11,
+  JWT_EXPIRED = 12,
 }
 
 enum ErrorTypes {
@@ -105,18 +108,31 @@ export const handleError = async (
       code: ErrorCode.NO_JWT,
       message: error.message,
       data: {},
+      status: 401,
     }
-    return res.status(401).send(report)
+    return handleResponse(req, res, report)
   }
 
   if (error instanceof jose.errors.JWSSignatureVerificationFailed) {
     const report: IErrorReport = {
       type: ErrorTypes.USER_INPUT,
       code: ErrorCode.ERR_JWS_SIGNATURE_VERIFICATION_FAILED,
-      message: error.message,
+      message: 'Authorization failed',
       data: {},
+      status: 401,
     }
-    return res.status(401).send(report)
+    return handleResponse(req, res, report)
+  }
+
+  if (error instanceof jose.errors.JWTExpired) {
+    const report: IErrorReport = {
+      type: ErrorTypes.USER_INPUT,
+      code: ErrorCode.JWT_EXPIRED,
+      message: 'Authorization failed',
+      data: {},
+      status: 401,
+    }
+    return handleResponse(req, res, report)
   }
 
   if (error instanceof MongooseErrorNamespace.ValidationError) {
@@ -128,8 +144,9 @@ export const handleError = async (
       code: ErrorCode.MONGOOSE_VALIDATION_ERROR,
       message: 'Validation Error',
       data: { fields },
+      status: 400,
     }
-    return res.status(400).send(report)
+    return handleResponse(req, res, report)
   }
 
   if (error instanceof InvalidCredentialsError) {
@@ -143,8 +160,9 @@ export const handleError = async (
           ['password', 'Invalid credentials'],
         ],
       },
+      status: 400,
     }
-    return res.status(400).send(report)
+    return handleResponse(req, res, report)
   }
 
   if ((error as DupeKey).code === 11000) {
@@ -158,8 +176,9 @@ export const handleError = async (
       data: {
         fields: [[key, message]],
       },
+      status: 400,
     }
-    return res.status(400).send(report)
+    return handleResponse(req, res, report)
   }
 
   if (error instanceof ResourceNotFoundError) {
@@ -172,8 +191,9 @@ export const handleError = async (
         resourceType,
         resourceId,
       },
+      status: 404,
     }
-    return res.status(404).send(report)
+    return handleResponse(req, res, report)
   }
 
   if (error instanceof SessionHasNotStartedError) {
@@ -182,8 +202,9 @@ export const handleError = async (
       code: ErrorCode.SESSION_HAS_NOT_STARTED,
       message: error.message,
       data: {},
+      status: 400,
     }
-    return res.status(400).send(report)
+    return handleResponse(req, res, report)
   }
 
   if (error instanceof SessionHasEndedError) {
@@ -192,8 +213,9 @@ export const handleError = async (
       code: ErrorCode.SESSION_HAS_ENDED,
       message: error.message,
       data: {},
+      status: 400,
     }
-    return res.status(400).send(report)
+    return handleResponse(req, res, report)
   }
 
   if (error) console.error(error)
@@ -202,6 +224,7 @@ export const handleError = async (
     code: ErrorCode.INTERNAL_SEVER_ERROR,
     message: 'Internal server error',
     data: {},
+    status: 500,
   }
-  res.status(500).send(report)
+  return handleResponse(req, res, report)
 }

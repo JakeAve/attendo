@@ -1,9 +1,10 @@
 import { Response } from 'express'
-import { IRequest } from '../middleware/setUser'
+import { IRequest, authTokenCookie } from '../middleware/setUser'
 import { UserModel, getPassword, IUser } from '../models/User'
-import { handleError, InvalidCredentialsError } from './error'
+import { handleError, InvalidCredentialsError } from '../handlers/errorHandler'
 import * as bcrypt from 'bcrypt'
 import { signJwt } from '../utils/jwt'
+import { handleResponse } from '../handlers/responseHandler'
 
 export const login = async (req: IRequest, res: Response) => {
   try {
@@ -20,8 +21,10 @@ export const login = async (req: IRequest, res: Response) => {
       throw new InvalidCredentialsError('Invalid credentials')
 
     const authToken = await signJwt(participant.toClient)
-    const payload = { ...participant.toClient, authToken }
-    res.status(200).send(payload)
+    handleResponse(req, res, {
+      data: participant.toClient,
+      token: authToken,
+    })
   } catch (err) {
     handleError(req, res, err)
   }
@@ -31,7 +34,19 @@ export const register = async (req: IRequest, res: Response) => {
   try {
     const participant = new UserModel(req.body)
     await participant.save()
-    res.status(201).send(participant.toClient)
+    handleResponse(req, res, {
+      data: participant.toClient,
+      status: 201,
+    })
+  } catch (err) {
+    handleError(req, res, err)
+  }
+}
+
+export const logout = async (req: IRequest, res: Response) => {
+  try {
+    res.clearCookie(authTokenCookie)
+    handleResponse(req, res, { token: null })
   } catch (err) {
     handleError(req, res, err)
   }

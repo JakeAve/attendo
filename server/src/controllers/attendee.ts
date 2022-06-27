@@ -9,7 +9,8 @@ import {
   ResourceTypes,
   SessionHasEndedError,
   SessionHasNotStartedError,
-} from './error'
+} from '../handlers/errorHandler'
+import { handleResponse } from '../handlers/responseHandler'
 
 export const attendByAttendeeId = async (req: IRequest, res: Response) => {
   try {
@@ -48,7 +49,7 @@ export const attendByAttendeeId = async (req: IRequest, res: Response) => {
       await attendee.save()
     }
 
-    res.status(201).send(attendee.toJSON())
+    handleResponse(req, res, { data: attendee.toJSON(), status: 201 })
   } catch (err) {
     handleError(req, res, err)
   }
@@ -97,7 +98,7 @@ export const attendAsNewAttendee = async (req: IRequest, res: Response) => {
     course.attendees.push(attendee._id)
     await course.save()
 
-    res.status(201).send(attendee.toJSON())
+    handleResponse(req, res, { data: attendee.toJSON(), status: 201 })
   } catch (err) {
     handleError(req, res, err)
   }
@@ -115,7 +116,8 @@ export const getAttendance = async (req: IRequest, res: Response) => {
         attendeeId,
         ResourceTypes.ATTENDEE,
       )
-    res.json(attendee.attendance)
+
+    handleResponse(req, res, { data: attendee.toJSON() })
   } catch (err) {
     handleError(req, res, err)
   }
@@ -134,7 +136,7 @@ export const updateAttendeeName = async (req: IRequest, res: Response) => {
       )
     attendee.name = name
     await attendee.save()
-    res.json(attendee.toJSON())
+    handleResponse(req, res, { data: attendee.toJSON() })
   } catch (err) {
     handleError(req, res, err)
   }

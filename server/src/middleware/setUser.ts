@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction, request } from 'express'
-import { handleError, NoJWTError } from '../controllers/error'
+import { Request, Response, NextFunction } from 'express'
+import { handleError, NoJWTError } from '../handlers/errorHandler'
 import { UserModel } from '../models/User'
 import { signJwt, verifyJwt } from '../utils/jwt'
 
-const authTokenCookie = 'auth_token'
+export const authTokenCookie = 'auth_token'
 
 export interface IUser {
   id?: string
@@ -29,7 +29,7 @@ export const setUser = async (
     if (!user) throw new Error('Invalid user')
     req.user = user.toClient
     req.token = await signJwt(user.toClient)
-    req.cookies(authTokenCookie, req.token, { httpOnly: true })
+    res.cookie(authTokenCookie, req.token, { httpOnly: true })
     next()
   } catch (err) {
     handleError(req, res, err)

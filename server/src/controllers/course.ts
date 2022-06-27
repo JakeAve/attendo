@@ -3,7 +3,12 @@ import { IRequest } from '../middleware/setUser'
 import { AttendeeModel } from '../models/Attendee'
 import { CourseModel } from '../models/Course'
 import { UserModel } from '../models/User'
-import { handleError, ResourceNotFoundError, ResourceTypes } from './error'
+import {
+  handleError,
+  ResourceNotFoundError,
+  ResourceTypes,
+} from '../handlers/errorHandler'
+import { handleResponse } from '../handlers/responseHandler'
 
 export const createCourse = async (req: IRequest, res: Response) => {
   try {
@@ -20,7 +25,7 @@ export const createCourse = async (req: IRequest, res: Response) => {
     course.attendees = attendeeRecords.map((attendee) => attendee._id)
 
     await course.save()
-    res.status(201).send(course.toJSON())
+    handleResponse(req, res, { data: course.toJSON(), status: 201 })
   } catch (err) {
     handleError(req, res, err)
   }
@@ -66,7 +71,7 @@ export const getAttendance = async (req: IRequest, res: Response) => {
         }
       }
     }
-    res.json({ attendance })
+    handleResponse(req, res, { data: course.toJSON() })
   } catch (err) {
     handleError(req, res, err)
   }
