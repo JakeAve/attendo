@@ -1,15 +1,25 @@
 import * as jose from 'jose'
 import fs from 'fs'
 
-const rawPrivateKey = JSON.parse(fs.readFileSync('./privateKey.json', 'utf8'))
-const rawPublicKey = JSON.parse(fs.readFileSync('./publicKey.json', 'utf8'))
+const privateKeyPath = './privateKey.json'
+const publicKeyPath = './publicKey.json'
+
+const rawPrivateKey = JSON.parse(fs.readFileSync(privateKeyPath, 'utf8'))
+const rawPublicKey = JSON.parse(fs.readFileSync(publicKeyPath, 'utf8'))
 
 let privateKey: Uint8Array | jose.KeyLike
 let publicKey: Uint8Array | jose.KeyLike
 ;(async () => {
-  privateKey = await jose.importJWK(rawPrivateKey)
-  publicKey = await jose.importJWK(rawPublicKey)
-  console.log(`JWT keys ready`)
+  try {
+    privateKey = await jose.importJWK(rawPrivateKey)
+    publicKey = await jose.importJWK(rawPublicKey)
+    console.log(`JWT keys ready`)
+  } catch (err) {
+    console.error(err)
+    console.log(
+      `There was an error with the public/private key pair to issue JWTs. Keys should be 'ES256', formatted as a JWKs and located in ${privateKeyPath} and ${publicKeyPath}.`,
+    )
+  }
 })()
 
 const issuer = 'attendo-api'
