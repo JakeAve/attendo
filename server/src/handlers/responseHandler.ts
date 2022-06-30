@@ -1,7 +1,7 @@
 import { Response } from 'express'
 import { IRequest } from '../middleware/setUser'
 
-interface IResponseBody {
+export interface IResponseBody {
   message: string
   data: any
   token?: string
