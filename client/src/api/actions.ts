@@ -1,4 +1,5 @@
 import { IResponseBody } from '../../../server/src/handlers/responseHandler'
+const apiURL = import.meta.env.VITE_API_URL
 
 interface LoginProps {
   email: string
@@ -6,7 +7,7 @@ interface LoginProps {
 }
 
 export const login = async (payload: LoginProps) => {
-  const res = await fetch('/api/auth/login', {
+  const res = await fetch(`${apiURL}/api/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -25,7 +26,7 @@ interface RegisterProps {
 }
 
 export const register = async (payload: RegisterProps) => {
-  const res = await fetch('/api/auth/register', {
+  const res = await fetch(`${apiURL}/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
