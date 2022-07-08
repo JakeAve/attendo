@@ -1,5 +1,6 @@
 import { login } from '../../api/actions'
 import { FieldInputs, useForm } from '../../hooks/useForm'
+import { useDialogContext } from '../../providers/DialogProvider'
 
 interface LoginProps {
   selectedIdx: number
@@ -33,12 +34,17 @@ const formFields: FieldInputs = [
 
 export const Login = (props: LoginProps) => {
   const { selectedIdx, idx } = props
+  const { openDialog, closeDialog } = useDialogContext()
 
   const onSubmit = async (data: any) => {
     try {
       const stuff = await login(data)
     } catch (err) {
       console.error(err)
+      openDialog({
+        title: 'Could not login',
+        content: 'Something went wrong',
+      })
     }
   }
 
@@ -48,9 +54,11 @@ export const Login = (props: LoginProps) => {
   })
 
   return (
-    <form hidden={selectedIdx !== idx} onSubmit={submit} onChange={change}>
-      {fieldElements}
-      <button type="submit">Login</button>
-    </form>
+    <>
+      <form hidden={selectedIdx !== idx} onSubmit={submit} onChange={change}>
+        {fieldElements}
+        <button type="submit">Login</button>
+      </form>
+    </>
   )
 }

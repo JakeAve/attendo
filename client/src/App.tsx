@@ -3,10 +3,11 @@ import './App.scss'
 import { Attend } from './views/Attend'
 import { Login } from './views/Login'
 import { Home } from './views/Home'
+import { DialogProvider } from './providers/DialogProvider'
 
 function App() {
   return (
-    <>
+    <DialogProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -14,7 +15,7 @@ function App() {
           <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </DialogProvider>
   )
 }
 
