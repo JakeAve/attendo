@@ -21,7 +21,7 @@ interface IUserInputErrorReport extends IErrorReport {
   data: UserInputErrorData
 }
 
-enum ErrorCode {
+export enum ErrorCode {
   INTERNAL_SEVER_ERROR = 1,
   MONGOOSE_VALIDATION_ERROR = 2,
   MONGOOSE_VERSION_ERROR = 3,

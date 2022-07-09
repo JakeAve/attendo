@@ -1,11 +1,16 @@
 import { IResponseBody } from '../../../server/src/handlers/responseHandler'
 
+interface ActionResponse {
+  success: boolean
+  response: IResponseBody
+}
+
 interface LoginProps {
   email: string
   password: string
 }
 
-export const login = async (payload: LoginProps) => {
+export const login = async (payload: LoginProps): Promise<ActionResponse> => {
   const res = await fetch(`/api/auth/login`, {
     method: 'POST',
     headers: {
@@ -13,8 +18,17 @@ export const login = async (payload: LoginProps) => {
     },
     body: JSON.stringify(payload),
   })
-  if (!res.ok) throw new Error('Invalid credentials')
-  return res.json()
+  const json = await res.json()
+  if (!res.ok)
+    return {
+      success: false,
+      response: json,
+    }
+
+  return {
+    success: true,
+    response: json,
+  }
 }
 
 interface RegisterProps {
@@ -24,7 +38,9 @@ interface RegisterProps {
   confirmPassword: string
 }
 
-export const register = async (payload: RegisterProps) => {
+export const register = async (
+  payload: RegisterProps,
+): Promise<ActionResponse> => {
   const res = await fetch(`/api/auth/register`, {
     method: 'POST',
     headers: {
@@ -32,5 +48,15 @@ export const register = async (payload: RegisterProps) => {
     },
     body: JSON.stringify(payload),
   })
-  return res.json()
+  const json = await res.json()
+  if (!res.ok)
+    return {
+      success: false,
+      response: json,
+    }
+
+  return {
+    success: true,
+    response: json,
+  }
 }

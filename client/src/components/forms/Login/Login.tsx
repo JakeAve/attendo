@@ -1,6 +1,6 @@
-import { login } from '../../api/actions'
-import { FieldInputs, useForm } from '../../hooks/useForm'
-import { useDialogContext } from '../../providers/DialogProvider'
+import { useRef } from 'react'
+import { FieldInputs } from '../../../hooks/useForm'
+import { useLogin } from './hooks/useLogin'
 
 interface LoginProps {
   selectedIdx: number
@@ -34,28 +34,18 @@ const formFields: FieldInputs = [
 
 export const Login = (props: LoginProps) => {
   const { selectedIdx, idx } = props
-  const { openDialog, closeDialog } = useDialogContext()
+  const formRef = useRef<HTMLFormElement>(null)
 
-  const onSubmit = async (data: any) => {
-    try {
-      const stuff = await login(data)
-    } catch (err) {
-      console.error(err)
-      openDialog({
-        title: 'Could not login',
-        content: 'Something went wrong',
-      })
-    }
-  }
-
-  const { submit, change, fieldElements } = useForm({
-    onSubmit,
-    fields: formFields,
-  })
+  const { submit, change, fieldElements } = useLogin({ formFields, formRef })
 
   return (
     <>
-      <form hidden={selectedIdx !== idx} onSubmit={submit} onChange={change}>
+      <form
+        hidden={selectedIdx !== idx}
+        onSubmit={submit}
+        onChange={change}
+        ref={formRef}
+      >
         {fieldElements}
         <button type="submit">Login</button>
       </form>

@@ -1,5 +1,6 @@
-import { register } from '../../api/actions'
-import { FieldInputs, useForm } from '../../hooks/useForm'
+import { useRef } from 'react'
+import { FieldInputs } from '../../../hooks/useForm'
+import { useSignUp } from './hooks/useSignUp'
 
 interface SignUpProps {
   selectedIdx: number
@@ -17,7 +18,7 @@ const formFields: FieldInputs = [
     criteria: [
       [(value: string) => !!value, 'Display name is required'],
       [(value: string) => value.length < 20, 'Display name is too long'],
-      [(value: string) => value.length > 6, 'Display name is too short'],
+      [(value: string) => value.length > 3, 'Display name is too short'],
     ],
   },
   {
@@ -77,22 +78,16 @@ const formFields: FieldInputs = [
 
 export const SignUp = (props: SignUpProps) => {
   const { selectedIdx, idx } = props
-
-  const onSubmit = async (data: any) => {
-    try {
-      const stuff = await register(data)
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  const { submit, change, fieldElements } = useForm({
-    onSubmit,
-    fields: formFields,
-  })
+  const formRef = useRef<HTMLFormElement>(null)
+  const { submit, change, fieldElements } = useSignUp({ formFields, formRef })
 
   return (
-    <form hidden={selectedIdx !== idx} onSubmit={submit} onChange={change}>
+    <form
+      hidden={selectedIdx !== idx}
+      onSubmit={submit}
+      onChange={change}
+      ref={formRef}
+    >
       {fieldElements}
       <button type="submit">Sign up</button>
     </form>

@@ -18,6 +18,7 @@ export type FieldInputs = FieldInput[]
 interface UseFormProps {
   onSubmit: (...args: any) => void
   fields: FieldInputs
+  formRef: React.RefObject<HTMLFormElement>
 }
 
 interface FormErrors {
@@ -25,7 +26,7 @@ interface FormErrors {
 }
 
 export const useForm = (props: UseFormProps) => {
-  const { onSubmit, fields } = props
+  const { onSubmit, fields, formRef } = props
 
   const [hasSubmitted, setHasSubmitted] = useState(false)
 
@@ -91,5 +92,7 @@ export const useForm = (props: UseFormProps) => {
     handleErrors(errors, form)
   }
 
-  return { submit, fieldElements, change }
+  const reset = () => formRef.current?.reset()
+
+  return { submit, fieldElements, change, reset }
 }
