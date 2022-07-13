@@ -11,6 +11,14 @@ const formFields: FieldInputs = [
     required: true,
     criteria: [[(value: string) => !!value, 'Session ID is required']],
   },
+  {
+    label: 'Code',
+    name: 'code',
+    type: 'text',
+    placeholder: 'Enter Code',
+    required: true,
+    criteria: [],
+  },
 ]
 
 export const Login = () => {
