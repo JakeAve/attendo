@@ -60,3 +60,31 @@ export const register = async (
     response: json,
   }
 }
+
+interface AttendByIdProps {
+  attendeeId: string
+  session: string
+  code: string
+}
+
+export const attendById = async ({
+  attendeeId,
+  session,
+  code,
+}: AttendByIdProps) => {
+  try {
+    const res = await fetch(`/api/attendance/${attendeeId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ session, code }),
+    })
+    const json = await res.json()
+    if (!res.ok) throw new Error(json.message)
+    return { success: true }
+  } catch (err) {
+    console.error(err)
+    return { success: false }
+  }
+}
