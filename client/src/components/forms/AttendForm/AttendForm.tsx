@@ -21,7 +21,7 @@ const formFields: FieldInputs = [
   },
 ]
 
-export const Login = () => {
+export const AttendForm = () => {
   const formRef = useRef<HTMLFormElement>(null)
 
   const { submit, change, fieldElements } = useAttendForm({
