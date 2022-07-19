@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
-import { Dialog } from '../components/dialog/Dialog'
-import { DialogProps, useDialog } from '../components/dialog/useDialog'
+import { Dialog } from '../components/Dialog/Dialog'
+import { DialogProps, useDialog } from '../components/Dialog/useDialog'
 
 interface DialogContext {
   isOpen: boolean
