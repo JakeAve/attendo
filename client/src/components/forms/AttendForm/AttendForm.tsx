@@ -1,40 +1,20 @@
 import { useRef } from 'react'
-import { FieldInputs } from '../../../hooks/useForm'
 import { useAttendForm } from './hooks/useAttendForm'
 
-const formFields: FieldInputs = [
-  {
-    label: 'Enter Session ID',
-    name: 'sessionId',
-    type: 'text',
-    placeholder: 'Enter Session ID',
-    required: true,
-    criteria: [[(value: string) => !!value, 'Session ID is required']],
-  },
-  {
-    label: 'Code',
-    name: 'code',
-    type: 'text',
-    placeholder: 'Enter Code',
-    required: true,
-    criteria: [],
-  },
-]
+export interface AttendFormProps {
+  type: 'text' | 'select'
+  list?: string[]
+  sessionId: string
+  code: string
+}
 
-export const AttendForm = () => {
+export const AttendForm = (props: AttendFormProps) => {
   const formRef = useRef<HTMLFormElement>(null)
-
-  const { submit, change, fieldElements } = useAttendForm({
-    formFields,
-    formRef,
-  })
-
+  const { submit, fieldElements } = useAttendForm({ formRef, ...props })
   return (
-    <>
-      <form onSubmit={submit} onChange={change} ref={formRef}>
-        {fieldElements}
-        <button type="submit">Attend</button>
-      </form>
-    </>
+    <form ref={formRef} onSubmit={submit}>
+      {fieldElements}
+      <button>Attend</button>
+    </form>
   )
 }

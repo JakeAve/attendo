@@ -1,17 +1,18 @@
 import { Link } from 'react-router-dom'
+import { routes } from '../../routes'
 
 export const Nav = () => {
   return (
     <nav>
       <ul>
         <li>
-          <Link to="/">Home</Link>
+          <Link to={routes.home}>Home</Link>
         </li>
         <li>
-          <Link to="/attend">Attend</Link>
+          <Link to={routes.attendSession}>Mark Attendance</Link>
         </li>
         <li>
-          <Link to="/login">Login / Register</Link>
+          <Link to={routes.login}>Login / Register</Link>
         </li>
       </ul>
     </nav>

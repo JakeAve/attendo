@@ -7,6 +7,7 @@ interface FormFieldProps {
   placeholder: string
   required: boolean
   hasSubmitted: boolean
+  defaultValue?: string
 }
 
 export const genId = (length: number) => {
@@ -26,6 +27,7 @@ export const FormField = (props: FormFieldProps) => {
     placeholder,
     required,
     hasSubmitted = false,
+    defaultValue = '',
   } = props
   const [hasFocused, setHasFocused] = useState(hasSubmitted)
   const randomId = genId(5)
@@ -39,6 +41,7 @@ export const FormField = (props: FormFieldProps) => {
         required={required}
         id={randomId}
         onFocus={() => setHasFocused(true)}
+        defaultValue={defaultValue}
       />
       {hasFocused && <span></span>}
     </div>

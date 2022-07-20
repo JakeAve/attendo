@@ -88,3 +88,33 @@ export const attendById = async ({
     return { success: false }
   }
 }
+
+interface EnterSessionProps {
+  sessionId: string
+  code: string
+}
+
+export const enterSession = async ({ code }: EnterSessionProps) => {
+  try {
+    // return {
+    //   type: 'text'
+    // }
+    return {
+      success: true,
+      response: {
+        type: 'text',
+        // type: 'select',
+        // list: ['John', 'Jacob', 'Jingle'],
+        code: '1234',
+        sessionId: '32343',
+      },
+    }
+  } catch {
+    return {
+      success: false,
+      response: {
+        message: 'Internal server error',
+      },
+    }
+  }
+}

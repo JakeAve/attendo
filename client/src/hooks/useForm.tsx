@@ -7,7 +7,8 @@ interface FieldInput {
   type: string
   placeholder: string
   required: boolean
-  criteria: [
+  defaultValue?: string
+  criteria?: [
     validator: (value: string, data: any) => boolean,
     message: string,
   ][]
@@ -43,7 +44,7 @@ export const useForm = (props: UseFormProps) => {
   const validate = (data: any) => {
     const errors: FormErrors = {}
     for (const field of fields) {
-      const { name, criteria } = field
+      const { name, criteria = [] } = field
       const value = data[name]
       for (const [validator, message] of criteria) {
         if (!validator(value, data)) {
