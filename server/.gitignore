@@ -5,3 +5,4 @@
 *.js
 privateKey.json
 publicKey.json
+hmacKey.json
