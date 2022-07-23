@@ -81,3 +81,29 @@ export const updateSession = async (req: IRequest, res: Response) => {
     handleError(req, res, err)
   }
 }
+
+export const getSessionByHash = async (req: IRequest, res: Response) => {
+  try {
+    const { hash } = req.params
+    const session = await SessionModel.findOne({ hash })
+    if (!session)
+      throw new ResourceNotFoundError(
+        'Session not found',
+        hash,
+        ResourceTypes.SESSION,
+      )
+
+    // const attendees = await AttendeeModel.find({
+    //   // @ts-ignore
+    //   _id: { $in: session.course.attendees },
+    // })
+    const data = {
+      type: 'text',
+      code: session.code,
+      sessionId: session._id,
+    }
+    handleResponse(req, res, { data })
+  } catch (err) {
+    handleError(req, res, err)
+  }
+}
