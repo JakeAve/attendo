@@ -24,7 +24,8 @@ export const attendByAttendeeId = async (req: IRequest, res: Response) => {
         ResourceTypes.SESSION,
       )
 
-    if (code !== session.code) throw new Error('Invalid session code')
+    if (code.toLowerCase() !== session.code)
+      throw new Error('Invalid session code')
 
     if (session.end && session.end < new Date())
       throw new SessionHasEndedError('Session has ended')
@@ -66,7 +67,8 @@ export const attendAsNewAttendee = async (req: IRequest, res: Response) => {
         ResourceTypes.SESSION,
       )
 
-    if (code !== session.code) throw new Error('Invalid session code')
+    if (code.toLowerCase() !== session.code)
+      throw new Error('Invalid session code')
 
     if (session.end && session.end < new Date())
       throw new Error('Session has ended')

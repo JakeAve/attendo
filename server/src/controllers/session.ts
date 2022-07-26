@@ -107,3 +107,22 @@ export const getSessionByHash = async (req: IRequest, res: Response) => {
     handleError(req, res, err)
   }
 }
+
+export const getHash = async (req: IRequest, res: Response) => {
+  try {
+    const { sessionId } = req.params
+    // TODO: check if requester is session owner
+    const session = await SessionModel.findById(sessionId)
+    if (!session)
+      throw new ResourceNotFoundError(
+        'Session not found',
+        sessionId,
+        ResourceTypes.SESSION,
+      )
+
+    const hash = session.hash
+    handleResponse(req, res, { data: hash })
+  } catch (err) {
+    handleError(req, res, err)
+  }
+}
