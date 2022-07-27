@@ -30,7 +30,6 @@ export const setUser = async (
     if (!jwt) throw new NoJWTError('No token')
     const verifiedJWT = await verifyJwt(jwt) // can throw JWSSignatureVerificationFailed error
     const user = await UserModel.findOne({ email: verifiedJWT.payload.email })
-    console.log({ user })
     if (!user) throw new Error('Invalid user')
     req.user = user
     req.token = await signJwt(user.toClient)

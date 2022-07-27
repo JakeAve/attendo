@@ -15,12 +15,10 @@ export const isAdmin = async (
   next: NextFunction,
 ) => {
   try {
-    console.log({ user: req.user, params: req.params })
     if (!req.user) throw new Error('No user')
     const { sessionId, courseId } = req.params
     if (sessionId) {
       const session = await SessionModel.findById(sessionId).populate('course')
-      console.log({ session })
       if (!session)
         throw new ResourceNotFoundError(
           'Session not found',
