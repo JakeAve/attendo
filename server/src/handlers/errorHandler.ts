@@ -34,6 +34,7 @@ export enum ErrorCode {
   NO_JWT = 10,
   ERR_JWS_SIGNATURE_VERIFICATION_FAILED = 11,
   JWT_EXPIRED = 12,
+  USER_NOT_ADMIN = 13,
 }
 
 enum ErrorTypes {
@@ -87,6 +88,12 @@ export class SessionHasEndedError extends Error {
 }
 
 export class NoJWTError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+}
+
+export class UserIsNotAdmin extends Error {
   constructor(message: string) {
     super(message)
   }
@@ -213,6 +220,20 @@ export const handleError = async (
       code: ErrorCode.SESSION_HAS_ENDED,
       message: error.message,
       data: {},
+      status: 400,
+    }
+    return handleResponse(req, res, report)
+  }
+
+  if (error instanceof UserIsNotAdmin) {
+    const report: IErrorReport = {
+      type: ErrorTypes.USER_INPUT,
+      code: ErrorCode.USER_NOT_ADMIN,
+      message: error.message,
+      data: {
+        user: req.user?.email,
+        course: req.course?._id,
+      },
       status: 400,
     }
     return handleResponse(req, res, report)

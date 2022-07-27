@@ -1,8 +1,8 @@
 @sessionId = 62ae65d92fa197321e588d4a
-@jwt = eyJhbGciOiJFUzI1NiJ9.eyJkaXNwbGF5TmFtZSI6IkpvaG4gRG9lIDExIiwiZW1haWwiOiJzdXBlcmNvb2xAZ21haWwuY29tIiwiaWF0IjoxNjU4ODA5NjE2LCJpc3MiOiJhdHRlbmRvLWFwaSIsImF1ZCI6Imh0dHBzOi8vYXR0ZW5kby5jb20iLCJleHAiOjE2NTg4MTE0MTZ9.2LeXDMCoSWPG2T3ogn5aSvcXUvLtv56YoclmTzAIEt-2zmHu26bLPuSNJJxrePwO_XTCh2RPuV9cPwzzpi2tWQ
+@jwt = eyJhbGciOiJFUzI1NiJ9.eyJkaXNwbGF5TmFtZSI6IkpvaG4gRG9lIDExIiwiZW1haWwiOiJzdXBlcmNvb2xAZ21haWwuY29tIiwiaWF0IjoxNjU4ODk0MzkzLCJpc3MiOiJhdHRlbmRvLWFwaSIsImF1ZCI6Imh0dHBzOi8vYXR0ZW5kby5jb20iLCJleHAiOjE2NTg4OTYxOTN9.iy92q7gCe0mFv9CDVBvV7kHS_BDVRx4Se_z0tS-NDyzLvFIbOuzuRZPCffruPkxxyuZv_421EnENcLxp9WcpXw
 
 // creating a new session
-POST http://localhost:6000/api/sessions/62ae65022fa197321e588d43
+POST http://localhost:6000/api/sessions/62e0ba673a0581627d1cf4fb
 Content-Type: application/json
 Authorization: Bearer {{jwt}}
 
@@ -29,5 +29,11 @@ Content-Type: application/json
 ###
 
 GET http://localhost:6000/api/sessions/by-hash/mu4IXh5dJAzY20G2OycyWwZtnwQXTLJ3kFtfnypeKRM=
+Content-Type: application/json
+Authorization: Bearer {{jwt}}
+
+
+### Get Hash of Session
+GET http://localhost:6000/api/sessions/hash/62e0ba9c3a0581627d1cf503
 Content-Type: application/json
 Authorization: Bearer {{jwt}}

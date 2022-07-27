@@ -1,7 +1,7 @@
 import { Schema, model, Document, Types } from 'mongoose'
 import { Collections } from './.collections'
 
-interface ICourse extends Document {
+export interface ICourse extends Document {
   name: string
   attendees: Types.ObjectId[]
   admins: Types.ObjectId[]

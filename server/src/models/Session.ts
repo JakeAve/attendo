@@ -1,10 +1,9 @@
 import { Schema, model, Types, Document } from 'mongoose'
 import { genEntryCode } from '../utils/genEntryCode'
 import { Collections } from './.collections'
-import crypto from 'crypto'
 import { generateHash } from '../utils/generateHash'
 
-interface ISession extends Document {
+export interface ISession extends Document {
   name: string
   code: string
   hash: string
