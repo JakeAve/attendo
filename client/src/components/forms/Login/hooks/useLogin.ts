@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { login } from '../../../../api/actions'
 import { FieldInputs, useForm } from '../../../../hooks/useForm'
 import { useDialogContext } from '../../../../providers/DialogProvider'
@@ -11,6 +12,7 @@ interface UseLoginProps {
 export const useLogin = ({ formFields, formRef }: UseLoginProps) => {
   const { openDialog } = useDialogContext()
   const { setUser } = useUserContext()
+  const navigate = useNavigate()
 
   const onSubmit = async (data: any) => {
     try {
@@ -26,6 +28,7 @@ export const useLogin = ({ formFields, formRef }: UseLoginProps) => {
       })
       resetForm()
       setUser({ ...response.data, ...response })
+      navigate('/')
     } catch (err) {
       console.error(err)
       openDialog({
