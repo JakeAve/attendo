@@ -1,6 +1,7 @@
 import { login } from '../../../../api/actions'
 import { FieldInputs, useForm } from '../../../../hooks/useForm'
 import { useDialogContext } from '../../../../providers/DialogProvider'
+import { useUserContext } from '../../../../providers/UserProvider'
 
 interface UseLoginProps {
   formFields: FieldInputs
@@ -9,6 +10,7 @@ interface UseLoginProps {
 
 export const useLogin = ({ formFields, formRef }: UseLoginProps) => {
   const { openDialog } = useDialogContext()
+  const { setUser } = useUserContext()
 
   const onSubmit = async (data: any) => {
     try {
@@ -23,6 +25,7 @@ export const useLogin = ({ formFields, formRef }: UseLoginProps) => {
         content: 'You have successfully logged in',
       })
       resetForm()
+      setUser({ ...response.data, ...response })
     } catch (err) {
       console.error(err)
       openDialog({
