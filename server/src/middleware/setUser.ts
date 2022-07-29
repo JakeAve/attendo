@@ -8,7 +8,7 @@ import { signJwt, verifyJwt } from '../utils/jwt'
 export const authTokenCookie = 'auth_token'
 
 export interface IUser {
-  id?: string
+  id?: string // This id is a string, not an object id
   email: string
   displayName: string
 }

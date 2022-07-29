@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import { IRequest } from '../middleware/setUser'
+import { IRequest, IUser } from '../middleware/setUser'
 import { AttendeeModel } from '../models/Attendee'
 import { CourseModel } from '../models/Course'
 import { UserModel } from '../models/User'
@@ -72,6 +72,16 @@ export const getAttendance = async (req: IRequest, res: Response) => {
       }
     }
     handleResponse(req, res, { data: course.toJSON() })
+  } catch (err) {
+    handleError(req, res, err)
+  }
+}
+
+export const getAllCourses = async (req: IRequest, res: Response) => {
+  try {
+    const user = req.user as IUser
+    const courses = await CourseModel.find({ admins: user.id })
+    handleResponse(req, res, { data: courses.map((course) => course.toJSON()) })
   } catch (err) {
     handleError(req, res, err)
   }
