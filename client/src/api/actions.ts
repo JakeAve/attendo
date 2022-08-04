@@ -1,4 +1,5 @@
 import { IResponseBody } from '../../../server/src/handlers/responseHandler'
+import { ICourse } from '../../../server/src/models/Course'
 
 interface ActionResponse {
   success: boolean
@@ -116,5 +117,27 @@ export const enterSession = async ({ code }: EnterSessionProps) => {
         message: 'Internal server error',
       },
     }
+  }
+}
+
+interface CoursesResponse extends IResponseBody {
+  data: ICourse[]
+}
+
+export const getCourses = async ({ token }: { token: string }) => {
+  try {
+    const res = await fetch(`/api/courses`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    const json = await res.json()
+    if (!res.ok) throw new Error(json.message)
+    return { success: true, response: json as CoursesResponse }
+  } catch (err) {
+    console.error(err)
+    return { success: false, response: { data: [] } }
   }
 }
