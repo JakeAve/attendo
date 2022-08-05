@@ -2,9 +2,9 @@ import { Response } from 'express'
 import { IRequest } from '../middleware/setUser'
 import { Error as MongooseErrorNamespace } from 'mongoose'
 import * as jose from 'jose'
-import { handleResponse } from './responseHandler'
+import { handleErrorResponse } from './responseHandler'
 
-interface IErrorReport {
+export interface IErrorReport {
   type: ErrorTypes
   code: ErrorCode
   message: string
@@ -35,6 +35,7 @@ export enum ErrorCode {
   ERR_JWS_SIGNATURE_VERIFICATION_FAILED = 11,
   JWT_EXPIRED = 12,
   USER_NOT_ADMIN = 13,
+  BAD_REFRESH_TOKEN = 14,
 }
 
 enum ErrorTypes {
@@ -93,6 +94,12 @@ export class NoJWTError extends Error {
   }
 }
 
+export class BadRefreshTokenError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+}
+
 export class UserIsNotAdmin extends Error {
   constructor(message: string) {
     super(message)
@@ -117,7 +124,7 @@ export const handleError = async (
       data: {},
       status: 401,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
   if (error instanceof jose.errors.JWSSignatureVerificationFailed) {
@@ -128,7 +135,7 @@ export const handleError = async (
       data: {},
       status: 401,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
   if (error instanceof jose.errors.JWTExpired) {
@@ -139,7 +146,7 @@ export const handleError = async (
       data: {},
       status: 401,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
   if (error instanceof MongooseErrorNamespace.ValidationError) {
@@ -153,7 +160,7 @@ export const handleError = async (
       data: { fields },
       status: 400,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
   if (error instanceof InvalidCredentialsError) {
@@ -169,7 +176,7 @@ export const handleError = async (
       },
       status: 400,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
   if ((error as DupeKey).code === 11000) {
@@ -185,7 +192,7 @@ export const handleError = async (
       },
       status: 400,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
   if (error instanceof ResourceNotFoundError) {
@@ -200,7 +207,7 @@ export const handleError = async (
       },
       status: 404,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
   if (error instanceof SessionHasNotStartedError) {
@@ -211,7 +218,7 @@ export const handleError = async (
       data: {},
       status: 400,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
   if (error instanceof SessionHasEndedError) {
@@ -222,7 +229,7 @@ export const handleError = async (
       data: {},
       status: 400,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
   if (error instanceof UserIsNotAdmin) {
@@ -236,10 +243,20 @@ export const handleError = async (
       },
       status: 400,
     }
-    return handleResponse(req, res, report)
+    return handleErrorResponse(req, res, report)
   }
 
-  if (error) console.error(error)
+  if (error instanceof BadRefreshTokenError) {
+    const report: IErrorReport = {
+      type: ErrorTypes.USER_INPUT,
+      code: ErrorCode.BAD_REFRESH_TOKEN,
+      message: error.message,
+      data: {},
+      status: 400,
+    }
+    return handleErrorResponse(req, res, report)
+  }
+
   const report: IErrorReport = {
     type: ErrorTypes.INTERNAL_SERVER_ERROR,
     code: ErrorCode.INTERNAL_SEVER_ERROR,
@@ -247,5 +264,5 @@ export const handleError = async (
     data: {},
     status: 500,
   }
-  return handleResponse(req, res, report)
+  return handleErrorResponse(req, res, report)
 }

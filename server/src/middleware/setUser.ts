@@ -1,9 +1,12 @@
 import { Request, Response, NextFunction } from 'express'
-import { handleError, NoJWTError } from '../handlers/errorHandler'
+import {
+  BadRefreshTokenError,
+  handleError,
+  NoJWTError,
+} from '../handlers/errorHandler'
 import { ICourse } from '../models/Course'
 import { ISession } from '../models/Session'
-import { UserModel } from '../models/User'
-import { signJwt, verifyJwt } from '../utils/jwt'
+import { verifyJwt } from '../utils/jwt'
 
 export const authTokenCookie = 'auth_token'
 
@@ -29,11 +32,8 @@ export const setUser = async (
     const jwt = req.headers.authorization?.split(' ')[1]
     if (!jwt) throw new NoJWTError('No token')
     const verifiedJWT = await verifyJwt(jwt) // can throw JWSSignatureVerificationFailed error
-    const user = await UserModel.findOne({ email: verifiedJWT.payload.email })
-    if (!user) throw new Error('Invalid user')
-    req.user = user
-    req.token = await signJwt(user.toClient)
-    res.cookie(authTokenCookie, req.token, { httpOnly: true })
+    if (verifiedJWT.payload.email !== (req.user as IUser).email)
+      throw new BadRefreshTokenError('Tokens do not match')
     next()
   } catch (err) {
     handleError(req, res, err)

@@ -1,5 +1,5 @@
 @courseId = 62ae65022fa197321e588d43
-@jwt = eyJhbGciOiJFUzI1NiJ9.eyJkaXNwbGF5TmFtZSI6IkpvaG4gRG9lIDExIiwiZW1haWwiOiJzdXBlcmNvb2xAZ21haWwuY29tIiwiaWF0IjoxNjU5NTkwODQ0LCJpc3MiOiJhdHRlbmRvLWFwaSIsImF1ZCI6Imh0dHBzOi8vYXR0ZW5kby5jb20iLCJleHAiOjE2NTk1OTI2NDR9.lTPpCkUCsam64gmGM9cWtuUFdtXS_Koo0QosKu7ACUVPo7SQYv7duGOagwoulgLvjTlYibD90hZdYfp3RiOueA
+@jwt = eyJhbGciOiJFUzI1NiJ9.eyJkaXNwbGF5TmFtZSI6IkpvaG4gRG9lIDExIiwiZW1haWwiOiJzdXBlcmNvb2xAZ21haWwuY29tIiwiaWF0IjoxNjU5NjY4Mzg0LCJpc3MiOiJhdHRlbmRvLWFwaSIsImF1ZCI6Imh0dHBzOi8vYXR0ZW5kby5jb20iLCJleHAiOjE2NTk2NzAxODR9.U0QMWUg3lCirGqtfD-22UJNjxM23dR2I6Haw9-WzjG177MHZCoscXLwvh-J1WatHIr7lhRkSD8WqDPA2TRCE2A
 
 
 ### Get courses by id
@@ -24,6 +24,7 @@ Authorization: Bearer {{jwt}}
 
 GET http://localhost:6000/api/courses/attendance/628c29af3d1f27ba7e44a06f
 
+# @no-cookie-jar
 ###
 # Get all courses by user
 GET http://localhost:6000/api/courses
