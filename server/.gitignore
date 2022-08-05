@@ -3,6 +3,6 @@
 /node_modules
 /.env
 *.js
-privateKey.json
-publicKey.json
+privateKey**.json
+publicKey**.json
 hmacKey.json
