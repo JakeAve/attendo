@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { ICourse } from '../../../server/src/models/Course'
 import { getCourses } from '../api/actions'
+import { CourseLink } from '../components/CouseLink/CourseLink'
 import { useUserContext } from '../providers/UserProvider'
 
 export const Home = () => {
@@ -23,7 +24,7 @@ export const Home = () => {
       <p>Some segment of text</p>
       <ul>
         {courses.map((course) => (
-          <li key={course._id}>{course.name}</li>
+          <CourseLink key={course._id} {...course} />
         ))}
       </ul>
     </>
