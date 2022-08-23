@@ -1,5 +1,6 @@
 import { Response } from 'express'
 import { IRequest } from '../middleware/setUser'
+import { IErrorReport } from './errorHandler'
 
 export interface IResponseBody {
   message: string
@@ -33,4 +34,12 @@ export const handleResponse = async (
   if (code) body.code = code
   if (type) body.type = type
   res.status(status).json(body)
+}
+
+export const handleErrorResponse = async (
+  req: IRequest,
+  res: Response,
+  errorReport: IErrorReport,
+) => {
+  handleResponse(req, res, errorReport)
 }

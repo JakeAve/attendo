@@ -8,13 +8,19 @@ import {
 } from '../controllers/session'
 import { isAdmin } from '../middleware/admin'
 import { setUser } from '../middleware/setUser'
+import { validateRefreshToken } from '../middleware/validateRefreshToken'
 
 const router = Router()
 
-router.get('/attendance/:sessionId', setUser, getAttendance)
-router.post('/:courseId', setUser, isAdmin, createSession)
-router.put('/:sessionId', setUser, updateSession)
+router.get(
+  '/attendance/:sessionId',
+  validateRefreshToken,
+  setUser,
+  getAttendance,
+)
+router.post('/:courseId', validateRefreshToken, setUser, isAdmin, createSession)
+router.put('/:sessionId', validateRefreshToken, setUser, updateSession)
 router.get('/by-hash/:hash', getSessionByHash)
-router.get('/hash/:sessionId', setUser, isAdmin, getHash)
+router.get('/hash/:sessionId', validateRefreshToken, setUser, isAdmin, getHash)
 
 export default router
