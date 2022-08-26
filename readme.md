@@ -5,6 +5,7 @@
 ### Prereqs
 
 - node version 18
+- npm i
 
 ### Start Server
 
